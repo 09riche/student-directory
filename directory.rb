@@ -66,13 +66,20 @@ def show_students
   print_footer
 end
 def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, hit return twice"
-  name = STDIN.gets.chomp
+  puts "Please enter the name of the student and their cohort. To finish, hit return twice."
+  name, cohort = "Name", "Cohort"
   while !name.empty? do
-    @students << {name: name, cohort: :November}
-    puts "Now we have #{@students.count} students"
+    puts "Name?"
     name = STDIN.gets.chomp
+    break if name.empty?
+    puts "Cohort?"
+    cohort = STDIN.gets.chomp.to_sym
+    @students << {name: name, cohort: cohort}
+    if @students.length == 1
+      puts "\nNow we have #{@students.count} student"
+    else
+      puts "\nNow we have #{@students.count} students"
+    end
   end
   @students
 end
@@ -87,7 +94,11 @@ def print_students_list
   end
 end
 def print_footer
-  puts "\nWe have #{@students.count} villainous students.\n"
+  if @students.count == 1
+    puts "\nWe have #{@students.count} villainous student.\n"
+  else
+    puts "\nWe have #{@students.count} villainous students.\n"
+  end
 end
 
 try_load_students

@@ -1,4 +1,6 @@
 @students = []
+@name = ""
+@cohort = ""
 
 # --------------loading and saving files ----------
 def try_load_students
@@ -16,8 +18,8 @@ end
 def load_students(filename = "students.csv")
   file = File.open(filename, "r")
   file.readlines.each do |line|
-    name, cohort = line.chomp.split(',')
-    @students << {name: name, cohort: cohort.to_sym}
+    @name, @cohort = line.chomp.split(',')
+    add_students_to_array
   end
   file.close
 end
@@ -62,19 +64,22 @@ end
 
 def input_students
   puts "Please enter the name of the student and their cohort. To finish, hit return twice."
-  name, cohort = "Name", "Cohort"
-  while !name.empty? do
+  @name, @cohort = "Name", "Cohort"
+  while !@name.empty? do
     puts "Name?"
-    name = STDIN.gets.chomp
-    break if name.empty?
+    @name = STDIN.gets.chomp
+    break if @name.empty?
     puts "Cohort?"
-    cohort = STDIN.gets.chomp.to_sym
-    @students << {name: name, cohort: cohort}
+    @cohort = STDIN.gets.chomp
+    add_students_to_array
     student_counter
   end
   @students
 end
 
+def add_students_to_array
+  @students << {name: @name, cohort: @cohort.to_sym}
+end
 
 # ---------- printing things ----------
 def print_menu

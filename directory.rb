@@ -5,8 +5,9 @@
 # --------------loading and saving files ----------
 def try_load_students
   filename = ARGV.first
-  return if filename.nil?
-  if File.exists?(filename)
+  if filename.nil?
+    load_students
+  elsif File.exists?(filename)
     load_students(filename)
     puts "Loaded #{@students.count} from #{filename}"
   else
@@ -15,28 +16,34 @@ def try_load_students
   end
 end
 
-def load_students(filename = "students.csv")
+def load_students
+  puts "Which file would you like to load?\n\n"
+  puts Dir["./*.csv"]
+  filename = gets.chomp
   file = File.open(filename, "r")
   file.readlines.each do |line|
     @name, @cohort = line.chomp.split(',')
     add_students_to_array
   end
   file.close
+  puts "#{filename} has been loaded."
 end
 
 def save_students
-  file = File.open("students.csv", "w")
+  puts "Enter filename"
+  filename = gets.chomp
+  file = File.open(filename, "w")
   @students.each do |student|
     student_data = [student[:name], student[:cohort]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
   file.close
+  puts "File saved to #{filename}."
 end
 
 #------------------ Menu and menu input processing -------
 def interactive_menu
-  puts `clear`
   loop do
     print_menu
     process(STDIN.gets.chomp)
@@ -64,13 +71,12 @@ end
 
 def input_students
   puts "Please enter the name of the student and their cohort. To finish, hit return twice."
-  @name, @cohort = "Name", "Cohort"
-  while !@name.empty? do
+  loop do
     puts "Name?"
-    @name = STDIN.gets.chomp
+    @name = STDIN.gets.chomp.capitalize
     break if @name.empty?
     puts "Cohort?"
-    @cohort = STDIN.gets.chomp
+    @cohort = STDIN.gets.chomp.capitalize
     add_students_to_array
     student_counter
   end
@@ -86,8 +92,8 @@ def print_menu
   puts "\nMENU"
   puts "1. Input the students"
   puts "2. List the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
+  puts "3. Save the list to disk"
+  puts "4. Load the list from disk"
   puts "5. List the students by cohort"
   puts "9. Exit"
 end

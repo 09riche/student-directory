@@ -19,6 +19,7 @@ def load_students(filename = "students.csv")
   file.close
 end
 def interactive_menu
+  puts `clear`
   loop do
     print_menu
     process(STDIN.gets.chomp)
@@ -52,6 +53,7 @@ def process(selection)
   end
 end
 def print_menu
+  puts "\nMENU"
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
@@ -65,29 +67,27 @@ def show_students
 end
 def input_students
   puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
-  # get the first name
+  puts "To finish, hit return twice"
   name = STDIN.gets.chomp
-  # while the name is not empty, repeat this code
   while !name.empty? do
-    # add the student hash to the array
-    @students << {name: name, cohort: :november}
+    @students << {name: name, cohort: :November}
     puts "Now we have #{@students.count} students"
     name = STDIN.gets.chomp
   end
   @students
 end
 def print_header
+  puts `clear`
   puts "The students of Villains Academy"
   puts "-------------"
 end
 def print_students_list
-  @students.each do |student|
-    puts "#{student[:name]} (#{student[:cohort]} cohort)"
+  @students.each_with_index do |student, i|
+    puts "#{i + 1}. #{student[:name]} (#{student[:cohort]} Cohort)"
   end
 end
 def print_footer
-  puts "Overall, we have #{@students.count} great students."
+  puts "\nWe have #{@students.count} villainous students.\n"
 end
 
 try_load_students

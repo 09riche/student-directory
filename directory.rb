@@ -1,7 +1,8 @@
 @students = []
 @name = ""
 @cohort = ""
-@notes = ""
+@subject = ""
+require 'csv'
 
 # --------------loading and saving files ----------
 def try_load_students
@@ -17,32 +18,45 @@ def try_load_students
     exit
   end
 end
+=begin
+def load_students
+  puts "Which file would you like to load?\n\n"
+  puts Dir["*.csv"]
+  filename = gets.chomp
+  CSV.foreach(filename) do |line|
+    @name, @cohort, @subject = line.to_s.split(',')
+    add_students_to_array
+  end
+  puts "#{filename} has been loaded."
+end
+=end
 
 def load_students
   puts "Which file would you like to load?\n\n"
-  puts Dir["./*.csv"]
+  puts Dir["*.csv"]
   filename = gets.chomp
   file = File.open(filename, "r")
   file.readlines.each do |line|
-    @name, @cohort, @notes = line.chomp.split(',')
-    add_students_to_array
+  @name, @cohort, @subject = line.chomp.split(',')
+    @students << {name: @name, cohort: @cohort, subject: @subject}
   end
   file.close
-  puts "#{filename} has been loaded."
 end
+
 
 def save_students
   puts "Enter filename"
   filename = gets.chomp
   file = File.open(filename, "w")
   @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:notes]]
+    student_data = [student[:name], student[:cohort], student[:subject]]
     csv_line = student_data.join(",")
     file.puts csv_line
   end
   file.close
   puts "File saved to #{filename}."
 end
+
 
 #------------------ Menu and menu input processing -------
 def interactive_menu
@@ -61,7 +75,7 @@ def process(selection)
     when "3"
       list_by_cohort
     when "4"
-      append_notes
+      append_subject
     when "5"
       delete_list
     when "6"
@@ -92,7 +106,7 @@ def input_students
 end
 
 def add_students_to_array
-  @students << {name: @name, cohort: @cohort, notes: @notes}
+  @students << {name: @name, cohort: @cohort, subject: @subject}
 end
 
 def delete_list
@@ -112,15 +126,19 @@ def delete_an_entry
   end
 end
 
-def append_notes
-  puts "Which entry would you like to append notes to?"
-  print_students_list
-  note_entry = (gets.chomp.to_i) - 1
-  puts "Please write notes:"
-  @notes = gets.chomp
-  @students[note_entry][:notes] = @notes
-end
 
+def append_subject
+  puts "Which entry would you like to add a subject to?"
+  print_students_list
+  subject_entry = (gets.chomp.to_i) - 1
+  if !@students[subject_entry]
+    puts "I'm afraid there's no such student."
+  else
+    puts "Subject?"
+    @subject = gets.chomp
+    @students[subject_entry][:subject] = @subject
+  end
+end
 
 
 # ---------- printing things ----------
@@ -129,7 +147,7 @@ def print_menu
   puts "1. Input students"
   puts "2. List students"
   puts "3. List students by cohort"
-  puts "4. Append notes to an entry"
+  puts "4. Append a subject"
   puts "5. Delete working list"
   puts "6. Delete an entry"
   puts "7. Save list to disk"
@@ -160,7 +178,7 @@ end
 
 def print_students_list
   @students.each_with_index do |student, i|
-    puts "#{i + 1}. #{student[:name]} (#{student[:cohort]} Cohort)\n\tNotes: #{student[:notes]}"
+    puts "#{i + 1}. #{student[:name]}; #{student[:cohort]} Cohort; Subject:#{student[:subject]}"
   end
 end
 

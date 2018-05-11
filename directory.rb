@@ -102,18 +102,22 @@ def input_students
     break if @name.empty?
     puts "Cohort? (Jan..Dec)"
     @cohort = STDIN.gets.chomp.capitalize
-    loop do
-      if !@months.include? @cohort
-        puts "I'm afraid there's no such cohort"
-        @cohort = STDIN.gets.chomp.capitalize
-      else
-        break
-      end
-    end
-      add_students_to_array
-      student_counter
+    cohort_check
+    add_students_to_array
+    student_counter
   end
   @students
+end
+
+def cohort_check
+  loop do
+    if !@months.include? @cohort
+      puts "I'm afraid there's no such cohort"
+      @cohort = STDIN.gets.chomp.capitalize
+    else
+      break
+    end
+  end
 end
 
 def add_students_to_array

@@ -2,6 +2,8 @@
 @name = ""
 @cohort = ""
 @subject = ""
+@months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 require 'csv'
 
 # --------------loading and saving files ----------
@@ -30,6 +32,7 @@ def load_students
   puts "#{filename} has been loaded."
 end
 =end
+
 
 def load_students
   puts "Which file would you like to load?\n\n"
@@ -97,10 +100,18 @@ def input_students
     puts "Name?"
     @name = STDIN.gets.chomp.capitalize
     break if @name.empty?
-    puts "Cohort?"
+    puts "Cohort? (Jan..Dec)"
     @cohort = STDIN.gets.chomp.capitalize
-    add_students_to_array
-    student_counter
+    loop do
+      if !@months.include? @cohort
+        puts "I'm afraid there's no such cohort"
+        @cohort = STDIN.gets.chomp.capitalize
+      else
+        break
+      end
+    end
+      add_students_to_array
+      student_counter
   end
   @students
 end
@@ -117,15 +128,14 @@ end
 def delete_an_entry
   puts "Which entry would you like to delete?\n"
   print_students_list
-  delete = gets.chomp.to_i
+  delete = (gets.chomp.to_i) - 1
   if !@students[delete]
     puts "No such entry"
   else
-    @students.delete_at(delete - 1)
+    @students.delete_at(delete)
     puts "Entry deleted"
   end
 end
-
 
 def append_subject
   puts "Which entry would you like to add a subject to?"
@@ -139,7 +149,6 @@ def append_subject
     @students[subject_entry][:subject] = @subject
   end
 end
-
 
 # ---------- printing things ----------
 def print_menu
